@@ -99,7 +99,7 @@ Components excluded by design: Library Tree, Lyrics Panel, Visualizations, Tabs,
 
 ## Known Limitations
 
-- Requires Windows colour assignments
+- Multi-disc and nested folder structures not yet supported in log viewer integration
 - Requires Windows dark mode enabled for best dark theme scrollbar rendering
 
 ---
