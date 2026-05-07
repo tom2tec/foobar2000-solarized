@@ -57,11 +57,16 @@ function on_paint(gr) {
 function on_mouse_move(x, y) {
     var was = _hover;
     _hover = inRect(x, y, 0, 0, window.Width, window.Height);
+
     // IDC_HAND = 32649 in Win32 - SMP 1.6.1 requires numeric constant
     window.SetCursor(32649);
-    _tooltip.Text = (getMode() === 'dark') ? 'Switch to light mode'
-                                           : 'Switch to dark mode';
+
+    _tooltip.Text = (getMode() === 'dark')
+        ? 'Switch to light mode'
+        : 'Switch to dark mode';
+
     _tooltip.Activate();
+
     if (_hover !== was) window.Repaint();
 }
 
