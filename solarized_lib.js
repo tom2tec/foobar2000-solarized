@@ -2,7 +2,7 @@
 // solarized_lib.js
 // foobar2000-solarized shared library
 // =============================================================================
-// Version:   0.1.0-dev
+// Version:   0.1.1-dev
 // License:   MIT
 // Author:    tom2tec / audio-file.org
 // Repo:      https://github.com/tom2tec/foobar2000-solarized
@@ -10,6 +10,17 @@
 //            foobar2000 2.25.8+
 //            Columns UI 3.4.1+
 //            Windows 10 / Windows 11
+// -----------------------------------------------------------------------------
+// File location:
+//   Development: %fb2k_profile%\solarized\solarized_lib.js
+//   Portable:    K:\foobar2000_solarized\profile\solarized\solarized_lib.js
+//   Repo:        K:\foobar2000_solarized\repo\foobar2000-solarized\solarized_lib.js
+// -----------------------------------------------------------------------------
+// Change log:
+//   0.1.1-dev  Hybrid dark/light switching - detectModeFromSystem(),
+//              toggleModeWithSystem(), _lib_on_colours_changed()
+//              on_colours_changed() added to mandatory panel callbacks
+//   0.1.0-dev  Initial version - palette, DPI, fonts, icons, mode switching
 // =============================================================================
 //
 // USAGE
@@ -20,21 +31,28 @@
 //
 // After include, all constants and functions below are available globally.
 //
-// MANDATORY PATTERN FOR on_notify_data IN PANEL SCRIPTS
-// ------------------------------------------------------
-// Every panel script that defines on_notify_data MUST call the library
-// handler first. Failure to do this will break dark/light mode switching:
+// MANDATORY PATTERNS FOR PANEL SCRIPTS
+// --------------------------------------
+// Two callbacks MUST be implemented in every panel script.
+// Both must call their library handler first.
+//
+// 1. on_notify_data - handles SMP toggle button switching:
 //
 //   function on_notify_data(name, data) {
 //       _lib_on_notify_data(name, data);   // ALWAYS first
 //       // ... panel-specific handlers below ...
 //   }
 //
-// If a panel script has no other notify handlers, define it as:
+// 2. on_colours_changed - handles Windows system dark/light mode switching
+//    and CUI mode changes (Dark/Light/System setting in CUI preferences):
 //
-//   function on_notify_data(name, data) {
-//       _lib_on_notify_data(name, data);
+//   function on_colours_changed() {
+//       _lib_on_colours_changed();         // ALWAYS first
+//       // ... panel-specific handlers below ...
 //   }
+//
+// Both callbacks are required for the hybrid switching architecture.
+// Missing either one will cause panels to fall out of sync during mode changes.
 //
 // =============================================================================
 
@@ -300,17 +318,50 @@ var COL_LIGHT = {
 // =============================================================================
 // SECTION 5 - ACTIVE COLOUR STATE AND MODE SWITCHING
 // =============================================================================
-// COL is the active colour object. Panel scripts reference COL.* exclusively.
-// setMode() updates COL and notifies all other panels simultaneously.
-// _lib_on_notify_data() must be called from every panel's on_notify_data().
+// Hybrid switching architecture - three paths all produce correct results:
+//
+// Path 1 - SMP toggle button:
+//   toggleModeWithSystem() -> writes Windows registry -> triggers
+//   on_colours_changed() in all panels -> _lib_on_colours_changed() ->
+//   detectModeFromSystem() -> setMode() -> NotifyOthers -> all panels repaint
+//
+// Path 2 - Windows Settings dark/light mode change:
+//   User changes Windows mode -> CUI responds via System setting ->
+//   on_colours_changed() fires in all panels -> same chain as Path 1
+//
+// Path 3 - CUI mode set to fixed Dark or Light:
+//   on_colours_changed() fires -> detectModeFromSystem() reads registry ->
+//   setMode() -> all panels update to match
+//
+// All three paths converge on setMode() ensuring consistent state.
+// COL is always the authoritative colour object for all panel drawing.
 // =============================================================================
 
 var _mode = window.GetProperty('solarized_mode', 'dark');
 var COL = (_mode === 'dark') ? COL_DARK : COL_LIGHT;
 
 /**
+ * Read Windows registry to determine current system dark/light mode.
+ * This is the single source of truth for mode detection.
+ * Returns 'dark' if registry read fails - safe default.
+ * @returns {string} 'dark' or 'light'
+ */
+function detectModeFromSystem() {
+    try {
+        var shell = new ActiveXObject('WScript.Shell');
+        var val = shell.RegRead(
+            'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\AppsUseLightTheme'
+        );
+        return (val === 0) ? 'dark' : 'light';
+    } catch(e) {
+        return 'dark';
+    }
+}
+
+/**
  * Switch between dark and light Solarized modes.
- * Persists the setting, notifies all SMP panels, and repaints.
+ * Updates COL, persists state, notifies all SMP panels, repaints.
+ * Internal use - call toggleModeWithSystem() from toggle button.
  * @param {string} mode - 'dark' or 'light'
  */
 function setMode(mode) {
@@ -323,11 +374,28 @@ function setMode(mode) {
 }
 
 /**
- * Toggle between dark and light modes.
- * Convenience function for the toggle button panel.
+ * Toggle mode and write Windows registry.
+ * Use this in the toggle button panel - not toggleMode() or setMode().
+ * Writing the registry triggers on_colours_changed() in all panels
+ * which in turn calls detectModeFromSystem() to confirm the new state.
+ * setMode() is also called directly as a safety net in case the registry
+ * write does not trigger on_colours_changed() immediately.
  */
-function toggleMode() {
-    setMode(_mode === 'dark' ? 'light' : 'dark');
+function toggleModeWithSystem() {
+    var newMode = (_mode === 'dark') ? 'light' : 'dark';
+    try {
+        var shell = new ActiveXObject('WScript.Shell');
+        shell.RegWrite(
+            'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\AppsUseLightTheme',
+            newMode === 'light' ? 1 : 0,
+            'REG_DWORD'
+        );
+    } catch(e) {
+        // Registry write failed - fall through to setMode() directly
+    }
+    // Direct setMode() call ensures SMP panels update even if registry
+    // write does not immediately trigger on_colours_changed()
+    setMode(newMode);
 }
 
 /**
@@ -339,8 +407,26 @@ function getMode() {
 }
 
 /**
+ * Library-internal colours changed handler.
+ * MUST be called first from on_colours_changed() in every panel script.
+ * Fires when CUI mode changes via Windows system, CUI preferences,
+ * or our registry write in toggleModeWithSystem().
+ * Detects new mode from registry and updates all panels if changed.
+ */
+function _lib_on_colours_changed() {
+    var detected = detectModeFromSystem();
+    if (detected !== _mode) {
+        setMode(detected);
+    } else {
+        // Mode unchanged but colours may have been adjusted -
+        // repaint to pick up any CUI colour updates
+        window.Repaint();
+    }
+}
+
+/**
  * Library-internal notify handler.
- * MUST be called from on_notify_data() in every panel script.
+ * MUST be called first from on_notify_data() in every panel script.
  * Updates COL and repaints when another panel calls setMode().
  * @param {string} name - Notification name
  * @param {*} data - Notification data
@@ -742,8 +828,14 @@ function codecColour(codec) {
 //
 //   // ... panel code using COL.*, SZ.*, FONT.*, px(), drawIcon*() ...
 //
+//   // Required - handles SMP panel-to-panel switching
 //   function on_notify_data(name, data) {
 //       _lib_on_notify_data(name, data);   // ALWAYS first
+//   }
+//
+//   // Required - handles Windows system mode and CUI mode changes
+//   function on_colours_changed() {
+//       _lib_on_colours_changed();         // ALWAYS first
 //   }
 //
 //   function on_paint(gr) {
