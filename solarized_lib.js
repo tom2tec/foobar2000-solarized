@@ -2,7 +2,7 @@
 // solarized_lib.js
 // foobar2000-solarized shared library
 // =============================================================================
-// Version:   0.1.2-dev
+// Version:   0.1.3-dev
 // License:   MIT
 // Author:    tom2tec / audio-file.org
 // Repo:      https://github.com/tom2tec/foobar2000-solarized
@@ -17,6 +17,7 @@
 //   Repo:        K:\foobar2000_solarized\repo\foobar2000-solarized\solarized_lib.js
 // -----------------------------------------------------------------------------
 // Change log:
+//   0.1.3-dev  window.DPI undefined guard - fallback to 96dpi
 //   0.1.2-dev  drawRoundRect arc guard fixed - FillSolidRect fallback added
 //   0.1.1-dev  Hybrid dark/light switching - detectModeFromSystem(),
 //              toggleModeWithSystem(), _lib_on_colours_changed()
@@ -67,7 +68,8 @@
 // This will be upgraded to on_dpi_changed in v1.1.
 // =============================================================================
 
-var SCALE = window.DPI / 96;
+var _dpi = (typeof window.DPI !== 'undefined' && window.DPI > 0) ? window.DPI : 96;
+var SCALE = _dpi / 96;
 
 /**
  * Scale a base pixel value to the current display DPI.
