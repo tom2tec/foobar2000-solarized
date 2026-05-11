@@ -5,29 +5,24 @@
 **Status:** Work In Progress | **Version:** 0.1.3-dev | **License:** MIT
 
 ---
+Overview
 
-## Overview
+`foobar2000-solarized` is a port of Ethan Schoonover's [Solarized](https://ethanschoonover.com/solarized/) colour scheme to foobar2000's Columns UI framework. Unlike partial theme implementations, this project targets 100% palette compliance, every visible pixel is either directly controlled by Columns UI colour settings or replaced by a custom Spider Monkey Panel (SMP) script. Native Windows controls that cannot be themed are replaced rather than approximated.
 
-`foobar2000-solarized` is a faithful port of Ethan Schoonover's [Solarized](https://ethanschoonover.com/solarized/) colour scheme to foobar2000's Columns UI framework. Unlike partial theme implementations, this project targets **100% palette compliance** — every visible pixel is either directly controlled by Columns UI colour settings or replaced by a custom Spider Monkey Panel (SMP) script. Native Windows controls that cannot be themed are replaced rather than approximated.
+The theme prioritises visibility and simplicity, a minimal, focused interface designed for listening, not managing.
 
-The theme prioritises **visibility and simplicity** — a minimal, focused interface designed for listening, not managing.
-
----
-
-## Features
+Features:
 
 - Full Solarized Dark and Solarized Light modes
 - Switchable between dark and light at runtime
-- Minimal component set — no visual clutter
+- Minimal component set with no visual clutter
 - Custom SMP panels replacing unthemeable native controls
-- 100% Solarized palette compliance — no approximations
-- Works out of the box — no custom font installation required
+- 100% Solarized palette compliance with no approximations
+- Works out of the box, no custom font installation required
 
----
+Solarized Palette
 
-## Solarized Palette
-
-### Base Tones
+Base Tones
 
 | Name   | Dark Mode | Light Mode | Role |
 |--------|-----------|------------|------|
@@ -40,7 +35,7 @@ The theme prioritises **visibility and simplicity** — a minimal, focused inter
 | base2  | `#eee8d5` | —          | Light highlight background |
 | base3  | `#fdf6e3` | —          | Light background |
 
-### Accent Colors (identical in both modes)
+Accent Colors (identical in both modes)
 
 | Name    | Hex       | Usage |
 |---------|-----------|-------|
@@ -53,11 +48,9 @@ The theme prioritises **visibility and simplicity** — a minimal, focused inter
 | Magenta | `#d33682` | Special highlights |
 | Violet  | `#6c71c4` | Secondary accent |
 
----
+Typography:
 
-## Typography
-
-All fonts are standard Windows system fonts — no installation required.
+All fonts are standard Windows system fonts, no installation required.
 
 | Role       | Font      | Usage |
 |------------|-----------|-------|
@@ -65,24 +58,20 @@ All fonts are standard Windows system fonts — no installation required.
 | Sans-serif | Verdana   | Playlist columns, artist, album, general UI |
 | Serif      | Georgia   | Now-playing title, highlighted content |
 
----
-
-## Components
+Components:
 
 The theme uses a deliberately minimal component set:
 
-- **Columns UI Playlist** — core playlist view
-- **Now Playing Info Panel** — track, artist, album display
-- **Seekbar** — custom SMP implementation
-- **Playback Controls** — custom SMP implementation
-- **Volume Control** — custom SMP implementation
-- **Album Art Panel** — fixed size, compact
+- Columns UI Playlist — core playlist view
+- Now Playing Info Panel — track, artist, album display
+- Seekbar — custom SMP implementation
+- Playback Controls — custom SMP implementation
+- Volume Control — custom SMP implementation
+- Album Art Panel — fixed size, compact
 
 Components excluded by design: Library Tree, Lyrics Panel, Visualizations, Tabs, Toolbar, Playlist Switcher.
 
----
-
-## Requirements
+Requirements:
 
 - foobar2000 v2.25.8 or later
 - [Columns UI](https://github.com/reupen/columns_ui) (latest release)
@@ -91,30 +80,22 @@ Components excluded by design: Library Tree, Lyrics Panel, Visualizations, Tabs,
 
 ---
 
-## Installation
+Installation
 
 > Installation instructions will be added when the first release is published.
 
----
-
-## Known Limitations
+Known Limitations:
 
 - Multi-disc and nested folder structures not yet supported in log viewer integration
 - Requires Windows dark mode enabled for best dark theme scrollbar rendering
 
----
-
-## Attribution
+Attributions:
 
 - Solarized colour scheme by [Ethan Schoonover](https://ethanschoonover.com/solarized/) — MIT License
 - Theme developed by [tom2tec](https://audio-file.org)
 
----
-
-## License
+License
 
 MIT License — see [LICENSE](LICENSE) for details.
 
----
-
-*Part of the [audio-file.org](https://audio-file.org) project ecosystem.*
+Part of the [audio-file.org](https://audio-file.org) project ecosystem.
