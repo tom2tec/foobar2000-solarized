@@ -2,7 +2,7 @@
 // solarized_lib.js
 // foobar2000-solarized shared library
 // =============================================================================
-// Version:   0.1.1-dev
+// Version:   0.1.2-dev
 // License:   MIT
 // Author:    tom2tec / audio-file.org
 // Repo:      https://github.com/tom2tec/foobar2000-solarized
@@ -17,6 +17,7 @@
 //   Repo:        K:\foobar2000_solarized\repo\foobar2000-solarized\solarized_lib.js
 // -----------------------------------------------------------------------------
 // Change log:
+//   0.1.2-dev  drawRoundRect arc guard fixed - FillSolidRect fallback added
 //   0.1.1-dev  Hybrid dark/light switching - detectModeFromSystem(),
 //              toggleModeWithSystem(), _lib_on_colours_changed()
 //              on_colours_changed() added to mandatory panel callbacks
@@ -515,9 +516,15 @@ function drawDivider(gr, x, y, w) {
 
 /**
  * Draw a filled rounded rectangle - used for button hover/press states.
+ * Arc values guarded against panel dimensions to prevent invalid value errors.
  */
 function drawRoundRect(gr, x, y, w, h, colour) {
-    gr.FillRoundRect(x, y, w, h, SZ.btn_r, SZ.btn_r, colour);
+    var r = Math.min(SZ.btn_r, Math.floor(w / 2), Math.floor(h / 2));
+    if (r > 0) {
+        gr.FillRoundRect(x, y, w, h, r, r, colour);
+    } else {
+        gr.FillSolidRect(x, y, w, h, colour);
+    }
 }
 
 /**
