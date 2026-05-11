@@ -2,7 +2,7 @@
 
 > A complete, 100% Solarized-compliant theme for foobar2000 Columns UI — available in both dark and light modes.
 
-**Status:** Work In Progress | **Version:** 0.1.0-dev | **License:** MIT
+**Status:** Work In Progress | **Version:** 0.1.3-dev | **License:** MIT
 
 ---
 
