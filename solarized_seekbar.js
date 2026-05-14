@@ -2,26 +2,24 @@
 // solarized_seekbar.js
 // foobar2000-solarized - Seekbar panel
 // ==================================================
-// Version:   0.2.0-dev
-// Changed:   Full seekbar implementation
-//            Playback position track with played/unplayed portions
-//            Draggable thumb for seeking
-//            Elapsed and remaining time display
-//            Responds to playback events
+// Version:   0.2.1-dev
+// Changed:   Header paths changed to relative format for portability
 // License:   MIT
 // Author:    tom2tec
 // Website:   audio-file.org
 // Repo:      https://github.com/tom2tec/foobar2000-solarized
-// Requires:  solarized_lib.js v0.1.3-dev or later
+// Requires:  solarized_lib.js v0.1.4-dev or later
 //            Spider Monkey Panel 1.6.1 (32-bit)
 //            foobar2000 2.25.8+
 //            Columns UI 3.4.1+
 //            Windows 10 / Windows 11
-// Dev:       K:\foobar2000_solarized\profile\solarized\solarized_seekbar.js
-// Repo:      K:\foobar2000_solarized\repo\foobar2000-solarized\solarized_seekbar.js
+// Location:  solarized\solarized_seekbar.js
+// Dev:       profile\solarized\solarized_seekbar.js
+// Repo:      solarized_seekbar.js
 // ==================================================
 // Change log:
-//   0.2.0-dev  Full seekbar implementation - track thumb time display seeking
+//   0.2.1-dev  Header paths changed to relative format
+//   0.2.0-dev  Full seekbar - track thumb time display seeking
 //   0.1.0-dev  Initial version - on_notify_data communication test
 // ==================================================
 
