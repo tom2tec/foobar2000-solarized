@@ -1,29 +1,31 @@
-// =============================================================================
+// ==================================================
 // solarized_lib.js
-// foobar2000-solarized shared library
-// =============================================================================
-// Version:   0.1.3-dev
+// foobar2000-solarized - Core shared library
+// ==================================================
+// Version:   0.1.4-dev
+// Changed:   Header paths changed to relative format for portability
 // License:   MIT
-// Author:    tom2tec / audio-file.org
+// Author:    tom2tec
+// Website:   audio-file.org
 // Repo:      https://github.com/tom2tec/foobar2000-solarized
 // Requires:  Spider Monkey Panel 1.6.1 (32-bit)
 //            foobar2000 2.25.8+
 //            Columns UI 3.4.1+
 //            Windows 10 / Windows 11
-// -----------------------------------------------------------------------------
-// File location:
-//   Development: %fb2k_profile%\solarized\solarized_lib.js
-//   Portable:    K:\foobar2000_solarized\profile\solarized\solarized_lib.js
-//   Repo:        K:\foobar2000_solarized\repo\foobar2000-solarized\solarized_lib.js
-// -----------------------------------------------------------------------------
+// Location:  solarized\solarized_lib.js
+// Dev:       profile\solarized\solarized_lib.js
+// Repo:      solarized_lib.js
+// ==================================================
 // Change log:
+//   0.1.4-dev  Header paths changed to relative format
 //   0.1.3-dev  window.DPI undefined guard - fallback to 96dpi
 //   0.1.2-dev  drawRoundRect arc guard fixed - FillSolidRect fallback added
 //   0.1.1-dev  Hybrid dark/light switching - detectModeFromSystem(),
 //              toggleModeWithSystem(), _lib_on_colours_changed()
 //              on_colours_changed() added to mandatory panel callbacks
 //   0.1.0-dev  Initial version - palette, DPI, fonts, icons, mode switching
-// =============================================================================
+// ==================================================
+
 //
 // USAGE
 // -----
